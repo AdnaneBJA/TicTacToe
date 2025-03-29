@@ -24,4 +24,10 @@ public class AccountService {
     public List<Account> getAllAccounts() {
         return accountRepositery.findAll();
     }
+
+    public int howManyAccountsMatch(String username, String password) {
+        int answer = accountRepositery.countHowManyAccountsMatch(username, password);
+        System.out.print("Number of accounts that match is: " + answer);
+        return accountRepositery.countHowManyAccountsMatch(username, password);
+    }
 }

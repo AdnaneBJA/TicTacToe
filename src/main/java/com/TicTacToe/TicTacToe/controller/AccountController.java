@@ -26,4 +26,17 @@ public class AccountController {
     public ResponseEntity<Account> addAccount(@RequestBody Account receivedAccount) {
         return new ResponseEntity<>(accountService.add(receivedAccount), HttpStatus.OK);
     }
+
+    @PostMapping("/login/")
+    public ResponseEntity<Integer> loginUser(@RequestBody Account receivedAccount) {
+        String username = receivedAccount.getUsername();
+        String password = receivedAccount.getPassword();
+
+        if (username != null && password != null) {
+            return new ResponseEntity<>(accountService.howManyAccountsMatch(username, password), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(-1, HttpStatus.NOT_FOUND);
+    }
+
+
 }
