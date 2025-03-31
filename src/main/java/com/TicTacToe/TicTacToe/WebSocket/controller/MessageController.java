@@ -1,5 +1,6 @@
-package com.TicTacToe.TicTacToe.WebSocket;
+package com.TicTacToe.TicTacToe.WebSocket.controller;
 
+import com.TicTacToe.TicTacToe.WebSocket.model.Message;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;

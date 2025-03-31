@@ -1,0 +1,19 @@
+<body>
+  <header class="game-header">
+    <div class="logo">TicTacToe</div>
+    <h1>Logged in as: {{ loggedInUser }}</h1>
+    <div class="button-placement">
+      <button class="signup-button" (click)="goToPage('signup')">
+        Sign Up
+      </button>
+      <button class="signup-button" (click)="goToPage('login')">Login</button>
+    </div>
+  </header>
+
+  <div class="content-area">
+    <div class="game-options">
+      <button (click)="goToPage('board')">Create Lobby</button>
+      <button>Join Lobby</button>
+    </div>
+  </div>
+</body>

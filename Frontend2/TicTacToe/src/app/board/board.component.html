@@ -1,0 +1,44 @@
+<div class="game-container">
+  <header class="game-header">
+    <div class="logo">TicTacToe</div>
+    <h1>Logged in as : {{ loggedInUser }}</h1>
+    <div class="button-placement">
+      <button class="signup-button" (click)="goToPage('signup')">
+        Sign Up
+      </button>
+      <button class="signup-button" (click)="goToPage('login')">Login</button>
+    </div>
+  </header>
+  <app-chatbox></app-chatbox>
+  <div class="game-content">
+    <h2 class="player-info">
+      Current Player:
+      <span
+        class="player-symbol"
+        [ngClass]="{
+          'player-x': playerService.currentPlayer === 'X',
+          'player-o': playerService.currentPlayer === 'O'
+        }"
+        >{{ playerService.currentPlayer }}</span
+      >
+    </h2>
+    <h2 *ngIf="gameIsOver">{{ winner }}</h2>
+
+    <div class="tic-tac-toe-grid">
+      <div
+        class="cell"
+        *ngFor="let cell of board; let i = index"
+        (click)="makeMove(i)"
+        [ngClass]="{
+          disabled: gameIsOver || cell !== '',
+          'player-x': cell === 'X',
+          'player-o': cell === 'O'
+        }"
+      >
+        {{ cell }}
+      </div>
+    </div>
+
+    <button class="reset-button" (click)="reset()">Reset Game</button>
+  </div>
+</div>

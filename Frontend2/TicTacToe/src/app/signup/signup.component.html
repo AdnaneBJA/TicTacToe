@@ -1,0 +1,65 @@
+<div class="signup-container">
+  <div class="signup-card">
+    <div class="logo-container">
+      <h1 class="logo-text">TicTacToe</h1>
+      <div class="logo-icon">
+        <span class="x-icon">X</span><span class="o-icon">O</span>
+      </div>
+    </div>
+
+    <h2 class="signup-title">Create Your Account</h2>
+
+    <form class="signup-form" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <div class="input-container">
+          <i class="input-icon user-icon">👤</i>
+          <input
+            type="text"
+            [(ngModel)]="username"
+            id="username"
+            name="username"
+            placeholder="Choose a username"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <div class="input-container">
+          <i class="input-icon email-icon">✉️</i>
+          <input
+            type="email"
+            id="email"
+            [(ngModel)]="email"
+            name="email"
+            placeholder="Enter your email"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-container">
+          <i class="input-icon password-icon">🔒</i>
+          <input
+            type="password"
+            [(ngModel)]="password"
+            id="password"
+            name="password"
+            placeholder="Create a password"
+            required
+          />
+        </div>
+      </div>
+
+      <button type="submit" class="signup-button">Sign Up</button>
+    </form>
+
+    <div class="login-prompt">
+      Already have an account? <a href="/login" class="login-link">Log In</a>
+    </div>
+  </div>
+</div>

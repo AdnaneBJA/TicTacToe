@@ -1,7 +1,4 @@
-package com.TicTacToe.TicTacToe.WebSocket;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonFormat;
+package com.TicTacToe.TicTacToe.WebSocket.model;
 
 public class Message {
     private String message;

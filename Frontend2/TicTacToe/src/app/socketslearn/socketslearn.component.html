@@ -1,0 +1,16 @@
+<button id="connect-btn" (click)="connectSocket()">Connect</button>
+
+<div>
+  <h1>What is your name ?</h1>
+  <input
+    type="text"
+    id="input-name"
+    [(ngModel)]="sentName"
+    placeholder="Your name here..."
+  />
+  <button id="send-name-btn" (click)="sendName()">SEND</button>
+
+  <ul>
+    <li *ngFor="let message of response">{{ message }}</li>
+  </ul>
+</div>

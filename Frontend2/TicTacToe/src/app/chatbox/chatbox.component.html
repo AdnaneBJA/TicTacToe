@@ -1,0 +1,33 @@
+<div class="chat-container">
+  <div class="chat-header">
+    <h3>Game Chat</h3>
+  </div>
+
+  <div class="messages-area">
+    <div
+      *ngFor="let message of messages"
+      class="message-bubble"
+      [ngClass]="{ received: message.type === 1, sent: message.type === 2 }"
+    >
+      <div class="message-sender">
+        {{ message.type === 1 ? "You" : "Opponent" }}
+      </div>
+      {{ message.message }}
+    </div>
+
+    <!-- Optional: Show when no messages -->
+    <div *ngIf="messages.length === 0" class="no-messages">
+      No messages yet. Start the conversation!
+    </div>
+  </div>
+
+  <div class="message-input">
+    <input
+      type="text"
+      placeholder="Type your message..."
+      [(ngModel)]="newmessage"
+      (keyup.enter)="sendMessage()"
+    />
+    <button (click)="sendMessage()">Send</button>
+  </div>
+</div>
