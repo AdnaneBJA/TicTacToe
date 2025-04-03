@@ -1,4 +1,22 @@
-<div *ngFor="let lobbie of lobbyList">
-  Lobby ID: {{ lobbie.lobbyID }}, Player Count: {{ lobbie.playerCount }}
-  <button>Join Lobby</button>
+<div class="lobby-container">
+  <h1 class="title">Available Lobbies</h1>
+
+  <div *ngIf="lobbyListArray.length === 0" class="no-lobbies-message">
+    No active lobbies found. Create a new one!
+  </div>
+
+  <div *ngFor="let lobby of lobbyListArray" class="lobby-item">
+    <div class="lobby-info">
+      Lobby ID: <span>{{ lobby.lobbyID }}</span> | Players:
+      <span class="player-count">{{ lobby.playerCount }}/2</span>
+    </div>
+    <button
+      class="join-button"
+      (click)="joinLobby(lobby.lobbyID)"
+      [ngClass]="{ disabled: lobby.playerCount >= 2 }"
+      [disabled]="lobby.playerCount >= 2"
+    >
+      {{ lobby.playerCount >= 2 ? "Full" : "Join Lobby" }}
+    </button>
+  </div>
 </div>

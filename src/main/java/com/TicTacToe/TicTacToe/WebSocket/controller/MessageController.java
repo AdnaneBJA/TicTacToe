@@ -10,8 +10,8 @@ import org.springframework.web.util.HtmlUtils;
 public class MessageController {
 
 
-    @MessageMapping("/hello")
-    @SendTo("/topic/message")
+    @MessageMapping("/hello/{lobbyID}")
+    @SendTo("/topic/message/{lobbyID}")
     public Message message(Message message) {
         return new Message(HtmlUtils.htmlEscape(message.getMessage()), message.getClientID());
     }

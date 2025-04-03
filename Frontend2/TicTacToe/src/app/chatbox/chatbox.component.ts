@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import * as StompJS from '@stomp/stompjs';
 import { WebsocketserviceService } from '../Services/AccountServices/websocketservice.service';
 import { Observable, Observer, Subscribable, Subscription } from 'rxjs';
+import { GameserviceService } from '../Services/AccountServices/gameservice.service';
 
 /* 
 TYPES
@@ -30,17 +31,23 @@ export class ChatboxComponent {
 
   private isConnectedSubscribed: Subscription | null = null;
   private isConnected: boolean = false;
+  private lobbyID: number = -1;
 
   newmessage: string = '';
   // Set up messages array
   messages: Message[] = [];
 
-  constructor(public stompService: WebsocketserviceService) {
+  constructor(
+    public stompService: WebsocketserviceService,
+    private gameService: GameserviceService
+  ) {
     this.clientID = this.generateRandomnNum();
     //  console.log('Random Client ID is : ' + this.clientID);
 
     this.stompClient = stompService.stompClient;
+    this.lobbyID = gameService.lobbyID;
 
+    console.log('FROM CLIENT, THE LOBBY ID IS: ' + this.lobbyID);
     this.isConnectedSubscribed = stompService.isConnected.subscribe(
       (connected) => {
         this.isConnected = connected;
@@ -48,29 +55,27 @@ export class ChatboxComponent {
         if (connected) {
           this.connect();
         }
-
-        console.log('Connection status changed to: ' + connected);
       }
     );
   }
 
   connect() {
     if (this.isConnected) {
-      this.stompService.stompClient?.subscribe('/topic/message', (message) => {
-        const receivedClientID = JSON.parse(message.body).clientID;
-        console.log('Received ID: ', receivedClientID);
+      this.stompService.stompClient?.subscribe(
+        `/topic/message/${this.lobbyID}`,
+        (message) => {
+          const receivedClientID = JSON.parse(message.body).clientID;
 
-        if (receivedClientID != this.clientID) {
-          const receivedMessage = {
-            message: JSON.parse(message.body).message,
-            type: 2,
-            clientID: this.clientID,
-          };
-          this.messages.push(receivedMessage);
+          if (receivedClientID != this.clientID) {
+            const receivedMessage = {
+              message: JSON.parse(message.body).message,
+              type: 2,
+              clientID: this.clientID,
+            };
+            this.messages.push(receivedMessage);
+          }
         }
-
-        console.log('Messages array after reception: ', this.messages);
-      });
+      );
     }
   }
 
@@ -80,7 +85,7 @@ export class ChatboxComponent {
       clientID: this.clientID,
     };
     this.stompClient?.publish({
-      destination: '/app/hello',
+      destination: `/app/hello/${this.lobbyID}`,
       body: JSON.stringify(sentMessageToBackend),
     });
 
@@ -93,7 +98,6 @@ export class ChatboxComponent {
     this.messages.push(sentMessage);
 
     this.newmessage = '';
-    console.log('Messages Array after SENDING: ', this.messages);
   }
 
   generateRandomnNum(): number {

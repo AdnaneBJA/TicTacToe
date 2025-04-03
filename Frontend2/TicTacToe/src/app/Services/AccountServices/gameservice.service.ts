@@ -6,11 +6,8 @@ import * as StompJS from '@stomp/stompjs';
   providedIn: 'root',
 })
 export class GameserviceService {
-  public stompClient: StompJS.Client | null = null;
-  public clientID: number = -999;
-  constructor(private chatBoxStompClient: ChatboxComponent) {
-    this.clientID = chatBoxStompClient.clientID;
-    console.log('Injectec clientID from service is: ' + this.clientID);
-    this.stompClient = chatBoxStompClient.stompClient;
-  }
+  // Add this property to your GameserviceService class
+  public lobbyID: number = -1;
+  public playerNumber: number = 1;
+  constructor() {}
 }

@@ -14,16 +14,8 @@ export class Player {
   age: number = 15;
 
   makeAMove(board: string[], index: number) {
-    // console.log(this.isValidMove(board, index));
-
     if (this.isValidMove(board, index)) {
       board[index] = this.currentPlayer;
-      //   console.log(
-      //     'Move made, current board: ' +
-      //       board +
-      //       ', Current Player: ' +
-      //       this.currentPlayer
-      //   );
 
       if (this.currentPlayer == 'X') {
         this.currentPlayer = 'O';

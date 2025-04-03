@@ -13,12 +13,13 @@ public class Game {
     private int player2ID;
     private boolean gameIsOver;
     private String winner;
+    private int playerTurnNumber;
 
 
 
     public Game() {}
 
-    public Game(String currentPlayer, String[] board, int lobbyID, int player1ID, int player2ID, boolean gameIsOver, String winner) {
+    public Game(String currentPlayer, String[] board, int lobbyID, int player1ID, int player2ID, boolean gameIsOver, String winner, int playerTurnNumber) {
         this.currentPlayer = currentPlayer;
         this.board = board;
         this.lobbyID = lobbyID;
@@ -26,6 +27,7 @@ public class Game {
         this.player2ID = player2ID;
         this.gameIsOver = gameIsOver;
         this.winner = winner;
+        this.playerTurnNumber = playerTurnNumber;
     }
 
     public String getCurrentPlayer() {
@@ -83,6 +85,15 @@ public class Game {
 
     public void setWinner(String winner) {
         this.winner = winner;
+    }
+
+
+    public int getPlayerTurnNumber() {
+        return playerTurnNumber;
+    }
+
+    public void setPlayerTurnNumber(int playerTurnNumber) {
+        this.playerTurnNumber = playerTurnNumber;
     }
 
     @Override

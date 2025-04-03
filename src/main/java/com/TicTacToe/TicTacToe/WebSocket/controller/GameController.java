@@ -4,12 +4,14 @@ import com.TicTacToe.TicTacToe.WebSocket.model.Game;
 import com.TicTacToe.TicTacToe.WebSocket.model.Lobby;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class GameController {
@@ -17,14 +19,36 @@ public class GameController {
 
     List<Lobby> lobbyList = new ArrayList<>();
 
-    @MessageMapping("/game")
-    @SendTo("/topic/game")
-    public Game game(Game game) {
-        // Rewrite the lobby system to be broadcasted to another subscribed controller, currently for all actions in game the lobby list increases by 1
-        lobbyList.add(new Lobby(game.getLobbyID(), 0));
-        System.out.println("Number Of lobbies: " + lobbyList.size() + ", which are: " + lobbyList);
+    @MessageMapping("/game/{lobbyID}")
+    @SendTo("/topic/game/{lobbyID}")
+    public Game game(@DestinationVariable int lobbyID ,Game game) {
+        System.out.println("RECEIVED SOMETHING:  " + game);
+        return new Game(game.getCurrentPlayer(), game.getBoard(), lobbyID, game.getPlayer1ID(), game.getPlayer2ID(), game.getIsGameIsOver(), game.getWinner(), game.getPlayerTurnNumber());
+    }
 
-        System.out.println("RECEIVED SOMETHING:  " + game.toString());
-        return new Game(game.getCurrentPlayer(), game.getBoard(), game.getLobbyID(), game.getPlayer1ID(), game.getPlayer2ID(), game.getIsGameIsOver(), game.getWinner());
+    @MessageMapping("/lobby/{lobbyID}")
+    @SendTo("/topic/{lobbyID}")
+    public Lobby lobby(@DestinationVariable int lobbyID, Lobby lobby) {
+
+
+        for (Lobby l: lobbyList) {
+            if (l.getLobbyID() == lobbyID) {
+                System.out.println("Lobby ID already exists: " + lobbyID + ", with player count: " + lobby.getPlayerCount());
+                l.setLobbyID(lobbyID);
+                l.setPlayerCount(2);
+                return lobby;
+            }
+        }
+        lobbyList.add(lobby);
+
+        System.out.println("Lobby from backend info: " + lobby + ", Lobby Array: " + lobbyList);
+        return new Lobby(lobbyID, lobby.getPlayerCount());
+    }
+
+    @MessageMapping("/lobbies")
+    @SendTo("/topic/lobbies")
+    public List<Lobby> getLobbyList() {
+
+        return lobbyList;
     }
 }

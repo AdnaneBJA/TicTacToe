@@ -1,0 +1,123 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: "Arial", sans-serif;
+  background-color: #f7f9fc;
+  color: #34495e;
+}
+
+.lobby-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  text-align: center;
+  color: #2c3e50;
+}
+
+.lobby-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  border-radius: 8px;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  width: 100%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.lobby-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.lobby-info {
+  font-size: 16px;
+}
+
+.player-count {
+  color: #3498db;
+  font-weight: bold;
+}
+
+.join-button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.join-button:hover {
+  background-color: #2980b9;
+}
+
+.join-button:active {
+  transform: scale(0.95);
+}
+
+.no-lobbies-message {
+  text-align: center;
+  margin-top: 30px;
+  font-size: 18px;
+  color: #7f8c8d;
+}
+
+.create-lobby-button {
+  margin-top: 30px;
+  padding: 12px 24px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.create-lobby-button:hover {
+  background-color: #c0392b;
+}
+
+.create-lobby-button:active {
+  transform: scale(0.98);
+}
+
+.join-button.disabled {
+  background-color: #bdc3c7;
+  color: #7f8c8d;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .title {
+    font-size: 22px;
+  }
+
+  .lobby-info {
+    font-size: 14px;
+  }
+
+  .join-button,
+  .create-lobby-button {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+}

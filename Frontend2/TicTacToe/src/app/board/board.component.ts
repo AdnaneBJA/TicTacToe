@@ -4,8 +4,10 @@ import { Player } from '../GameLogic/player';
 import { Router } from '@angular/router';
 import * as StompJS from '@stomp/stompjs';
 import { ChatboxComponent } from '../chatbox/chatbox.component';
-import { GameserviceService } from '../Services/AccountServices/gameservice.service';
+
 import { WebsocketserviceService } from '../Services/AccountServices/websocketservice.service';
+import { LobbylistComponent } from '../lobbylist/lobbylist.component';
+import { GameserviceService } from '../Services/AccountServices/gameservice.service';
 
 @Component({
   selector: 'app-board',
@@ -26,6 +28,8 @@ export class BoardComponent {
   player1: string = 'X';
   player2: string = 'O';
   currentPlayer: string = 'X';
+  playerNumber: number = -999;
+  playerTurnNumber: number = 1;
 
   private isConnectedSubscription: Subscription | null = null;
   private isConnected: boolean = false;
@@ -44,35 +48,77 @@ export class BoardComponent {
   constructor(
     public playerService: Player,
     private router: Router,
-    public stompService: WebsocketserviceService
+    public stompService: WebsocketserviceService,
+    private gameService: GameserviceService
   ) {
-    this.lobbyID = this.generateLobbyId();
-    console.log('Lobby Id is: ' + this.lobbyID);
+    this.setupLobbyID(gameService);
 
+    this.playerNumber = this.gameService.playerNumber;
     console.log(
       `Joined game... Your player ID is ${stompService.clientID}, Lobby ID is: ${this.lobbyID}`
     );
 
     this.isConnectedSubscription = stompService.isConnected.subscribe(
       (connected) => {
-        console.log('Value of connected inside board: ' + connected);
-
         if (connected) {
           this.connect();
+
+          this.setupLobbyConnection();
+          this.sendLobbyInfoToBackend();
         }
       }
     );
   }
 
-  connect() {
-    this.stompService.stompClient?.subscribe('/topic/game', (game) => {
-      console.log(this.currentPlayer);
-      this.gameIsOver = JSON.parse(game.body).isGameIsOver;
-      this.playerService.currentPlayer = JSON.parse(game.body).currentPlayer;
-      this.board = JSON.parse(game.body).board;
-      this.winner = JSON.parse(game.body).winner;
-      console.log('Received Game from backend: ', JSON.parse(game.body));
+  setupLobbyID(gameService: GameserviceService) {
+    console.log('Game Service lobby ID: ' + this.gameService.lobbyID);
+
+    if (this.gameService.lobbyID === -1) {
+      this.lobbyID = this.generateLobbyId();
+      this.gameService.lobbyID = this.lobbyID;
+    } else {
+      this.lobbyID = this.gameService.lobbyID;
+    }
+    console.log('Lobby Id is: ' + this.lobbyID);
+  }
+
+  setupLobbyConnection() {
+    this.stompService.stompClient?.subscribe(
+      `/topic/${this.lobbyID}`,
+      (lobby) => {
+        //console.log('Received Lobby: ', lobby);
+      }
+    );
+  }
+
+  sendLobbyInfoToBackend() {
+    const sentInfo = {
+      lobbyID: this.lobbyID,
+      playerCount: 1,
+    };
+
+    // console.log('Sending this info to backend for lobbies: ', sentInfo);
+
+    this.stompService.stompClient?.publish({
+      destination: `/app/lobby/${this.lobbyID}`,
+      body: JSON.stringify(sentInfo),
     });
+  }
+
+  connect() {
+    console.log(`SUBSCRIBED TO: /topic/game/${this.lobbyID} `);
+    this.stompService.stompClient?.subscribe(
+      `/topic/game/${this.lobbyID}`,
+      (game) => {
+        // console.log(this.currentPlayer);
+        this.gameIsOver = JSON.parse(game.body).isGameIsOver;
+        this.playerService.currentPlayer = JSON.parse(game.body).currentPlayer;
+        this.board = JSON.parse(game.body).board;
+        this.winner = JSON.parse(game.body).winner;
+        this.playerTurnNumber = JSON.parse(game.body).playerTurnNumber;
+        //  console.log('Received Game from backend: ', JSON.parse(game.body));
+      }
+    );
   }
 
   reset() {
@@ -85,9 +131,11 @@ export class BoardComponent {
 
   makeMove(index: number) {
     if (this.gameIsOver || this.board[index] !== '') return;
+    if (this.playerTurnNumber !== this.playerNumber) return;
 
     if (!this.gameIsOver) {
       this.playerService.makeAMove(this.board, index);
+      this.playerTurnNumber = this.playerTurnNumber === 1 ? 2 : 1;
       this.numberOfFilledCell++;
       this.gameIsOver = this.checkTicTacToe();
     }
@@ -100,10 +148,11 @@ export class BoardComponent {
       player2ID: 2,
       gameIsOver: this.gameIsOver,
       winner: this.winner,
+      playerTurnNumber: this.playerTurnNumber,
     };
 
     this.stompService.stompClient?.publish({
-      destination: '/app/game',
+      destination: `/app/game/${this.lobbyID}`,
       body: JSON.stringify(sentInfo),
     });
   }
@@ -121,7 +170,6 @@ export class BoardComponent {
         this.board[b] == this.board[c] &&
         this.board[a] != ''
       ) {
-        console.log('Tic Tac Toe for player: ' + possibleWinner);
         this.winner =
           possibleWinner === 'X' ? 'Player 1 Wins !' : 'Player 2 Wins !';
 

@@ -10,6 +10,7 @@ public class Lobby {
 
     public Lobby(int lobbyID, int playerCount) {
         this.lobbyID = lobbyID;
+        this.playerCount = playerCount;
     }
 
     public int getLobbyID() {
